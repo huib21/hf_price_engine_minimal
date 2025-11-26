@@ -33,8 +33,8 @@ API_URL = (
     f"?ids={ID_LIST}&vs_currencies=usd"
 )
 
-BASE_INTERVAL = 5      # normale interval (sec)
-BACKOFF_INTERVAL = 20  # extra wachtijd na 429
+BASE_INTERVAL = 3      # normale interval (sec)
+BACKOFF_INTERVAL = 10  # extra wachtijd na 429
 
 
 class HFPriceService:
