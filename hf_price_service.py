@@ -3,28 +3,33 @@ import time
 
 TOKENS = ["SOL", "USDC", "ETH", "USDT", "BONK", "JUP", "RAY", "ORCA"]
 
-def get_prices(tokens):
-    try:
-        ids = ",".join(tokens)
-        url = f"https://api.jup.ag/price/v2?ids={ids}"
-        r = requests.get(url, timeout=2)
-        r.raise_for_status()
-        data = r.json()["data"]
+API_URL = "https://quote-api.jup.ag/v6/price?ids=" + ",".join(TOKENS)
 
-        result = {}
-        for t in tokens:
-            if t in data and "price" in data[t]:
-                result[t] = data[t]["price"]
+class HFPriceService:
+    def run(self):
+        print("HF Jupiter Engine Running...\n")
 
-        return result
+        while True:
+            try:
+                r = requests.get(API_URL, timeout=5)
+                r.raise_for_status()
+                data = r.json()
 
-    except Exception as e:
-        print("Error:", e)
-        return {}
+                # Jupiter returns structure:
+                # { "data": { "SOL": {...}, "USDC": {...}, ... } }
+                out = {}
 
-print("HF Jupiter Engine Running...\n")
+                for t in TOKENS:
+                    if t in data.get("data", {}):
+                        out[t] = data["data"][t]["price"]
 
-while True:
-    prices = get_prices(TOKENS)
-    print(prices)
-    time.sleep(1)
+                print(out)
+
+            except Exception as e:
+                print("Error:", e)
+                print("{}")
+
+            time.sleep(1)
+
+if __name__ == "__main__":
+    HFPriceService().run()
