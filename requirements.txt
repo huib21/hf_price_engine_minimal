@@ -1,1 +1,5 @@
 requests
+aiohttp
+websockets
+solana
+solders
